@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import { toast } from 'react-toastify';
 import {
   BtnLabel,
@@ -9,51 +9,44 @@ import {
 } from './Serchbar.styled';
 import { ReactComponent as Icon } from 'icons/search.svg';
 
-export class Searchbar extends Component {
-  state = {
-    inputValue: '',
+export const Searchbar = ({ onSubmit }) => {
+  const [inputValue, setInputValue] = useState('');
+
+  const handleInputChange = ({ currentTarget }) => {
+    setInputValue(currentTarget.value.toLowerCase());
   };
 
-  handleInputChange = ({ currentTarget }) => {
-    this.setState({
-      inputValue: currentTarget.value.toLowerCase(),
-    });
-  };
-
-  handleSubmit = e => {
+  const handleSubmit = e => {
     e.preventDefault();
-    if (this.state.inputValue.trim() === '') {
+    if (inputValue.trim() === '') {
       return toast.error('Enter your search query!');
     }
-    this.props.onSubmit(this.state.inputValue);
-    this.setState({
-      inputValue: '',
-    });
+    onSubmit(inputValue);
+    setInputValue('');
   };
-  render() {
-    return (
-      <>
-        <Header className="searchbar">
-          <SearchForm className="form" onSubmit={this.handleSubmit}>
-            <SearchButton type="submit" className="button">
-              <BtnLabel className="button-label">
-                {' '}
-                <Icon />
-              </BtnLabel>
-            </SearchButton>
 
-            <Input
-              className="input"
-              type="text"
-              autoComplete="off"
-              autoFocus
-              placeholder="Search images and photos"
-              value={this.state.inputValue}
-              onChange={this.handleInputChange}
-            />
-          </SearchForm>
-        </Header>
-      </>
-    );
-  }
-}
+  return (
+    <>
+      <Header className="searchbar">
+        <SearchForm className="form" onSubmit={handleSubmit}>
+          <SearchButton type="submit" className="button">
+            <BtnLabel className="button-label">
+              {' '}
+              <Icon />
+            </BtnLabel>
+          </SearchButton>
+
+          <Input
+            className="input"
+            type="text"
+            autoComplete="off"
+            autoFocus
+            placeholder="Search images and photos"
+            value={inputValue}
+            onChange={handleInputChange}
+          />
+        </SearchForm>
+      </Header>
+    </>
+  );
+};
